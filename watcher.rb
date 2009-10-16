@@ -11,6 +11,7 @@ if ARGV.empty?
 end
 
 watch_folder = ARGV[0]
+mtimes = {}
 
 puts "Watching #{watch_folder} and subfolders for changes in SASS & HAML files..."
 
@@ -25,7 +26,9 @@ while true do
     files += Dir.glob( File.join( watch_folder, "**", "*.sass" ) )
 
     files.each do |f|
-
+      f_mtime = File.mtime(f).to_i
+      next if mtimes[f] == f_mtime
+      
       output_file = ""
       
       ex = f.match(/(sass|haml)$/)[1]
@@ -39,6 +42,8 @@ while true do
       cmd = "#{ex} #{f} #{output_file}"
       puts "- #{cmd}"
       system(cmd)
+      
+      mtimes[f] = f_mtime
     end
   end
   
