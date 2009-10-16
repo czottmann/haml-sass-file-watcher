@@ -11,21 +11,32 @@ if ARGV.empty?
 end
 
 watch_folder = ARGV[0]
-watch_files  = "*.haml"
 
-puts "Watching #{watch_folder} and subfolders for changes in #{watch_files} files..."
+puts "Watching #{watch_folder} and subfolders for changes in SASS & HAML files..."
 
 while true do
-  new_hash = Digest::MD5.hexdigest(`find #{watch_folder} -name "#{watch_files}" -ls`);
+  new_hash = Digest::MD5.hexdigest(`find #{watch_folder} \\( -name "*.haml" -or -name "*.sass" \\) -ls`);
   hash ||= new_hash
   
   if new_hash != hash
     hash = new_hash
     
-    haml_files = File.join( watch_folder, "**", watch_files )
-    Dir.glob(haml_files).each do |f|
-      output_file = f.gsub(/\/haml\/([^\/]+)\.haml/, '/output/\1.html')
-      cmd = "haml #{f} #{output_file}"
+    files = Dir.glob( File.join( watch_folder, "**", "*.haml" ) )
+    files += Dir.glob( File.join( watch_folder, "**", "*.sass" ) )
+
+    files.each do |f|
+
+      output_file = ""
+      
+      ex = f.match(/(sass|haml)$/)[1]
+      case ex
+      when "haml"
+        output_file = f.gsub(/\/haml\/([^\/]+)\.haml/, '/output/\1.html')
+      when "sass"
+        output_file = f.gsub(/\/sass\/([^\/]+)\.sass/, '/css/\1.css')
+      end
+
+      cmd = "#{ex} #{f} #{output_file}"
       puts "- #{cmd}"
       system(cmd)
     end
