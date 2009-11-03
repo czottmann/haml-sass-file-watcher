@@ -35,7 +35,7 @@ while true do
       when "haml"
         output_file = f.gsub(/\/haml\/([^\/]+)\.haml/, '/output/\1.html')
       when "sass"
-        options = "--style compact"
+        options = "--style expanded"
         output_file = f.gsub(/\/sass\/([^\/]+)\.sass/, '/css/\1.css')
       end
 
