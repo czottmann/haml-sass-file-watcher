@@ -1,7 +1,5 @@
 #!/usr/local/bin/ruby
 
-require "digest/md5"
-
 trap("SIGINT") { exit }
 
 if ARGV.empty?
@@ -16,34 +14,34 @@ mtimes = {}
 puts "Watching #{watch_folder} and subfolders for changes in SASS & HAML files..."
 
 while true do
-  new_hash = Digest::MD5.hexdigest(`find #{watch_folder} \\( -name "*.haml" -or -name "*.sass" \\) -ls`);
+  files = Dir.glob( File.join( watch_folder, "**", "*.haml" ) )
+  files += Dir.glob( File.join( watch_folder, "**", "*.sass" ) )
+
+  new_hash = files.collect {|f| [ f, File.stat(f).mtime.to_i ] }
   hash ||= new_hash
+  diff_hash = new_hash - hash
   
-  if new_hash != hash
+  unless diff_hash.empty?
     hash = new_hash
     
-    files = Dir.glob( File.join( watch_folder, "**", "*.haml" ) )
-    files += Dir.glob( File.join( watch_folder, "**", "*.sass" ) )
-
-    files.each do |f|
-      f_mtime = File.mtime(f).to_i
-      next if mtimes[f] == f_mtime
+    diff_hash.each do |df|
+      f = df.first
       
       output_file = ""
+      options = ""
       
       ex = f.match(/(sass|haml)$/)[1]
       case ex
       when "haml"
         output_file = f.gsub(/\/haml\/([^\/]+)\.haml/, '/output/\1.html')
       when "sass"
+        options = "--style compact"
         output_file = f.gsub(/\/sass\/([^\/]+)\.sass/, '/css/\1.css')
       end
 
-      cmd = "#{ex} #{f} #{output_file}"
+      cmd = "#{ex} #{options} #{f} #{output_file}"
       puts "- #{cmd}"
       system(cmd)
-      
-      mtimes[f] = f_mtime
     end
   end
   
