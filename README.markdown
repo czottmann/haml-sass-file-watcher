@@ -1,16 +1,16 @@
-### What It Does
+## What It Does
 
 Keeps an eye on a specified folder, waiting for HAML/SASS file changes. When a
 file was changed, it's re-generated in `#{watch_folder}/output/` or
 `#{watch_folder}/css/`.
 
 
-### Usage
+## Usage
 
     ruby watcher.rb watch_folder
 
 
-### Example
+## Example
 
 Running `ruby watcher.rb /Users/Lebowski/Code/my_project` will watch both both
 `/Users/Lebowski/Code/my_project/haml/` and
@@ -20,7 +20,7 @@ and saved in either `/Users/Lebowski/Code/my_project/output/` (HTML) or
 `/Users/Lebowski/Code/my_project/css/`.
 
 
-### Fragments / Includes
+## Fragments / Includes
 
 Using the custom `%include` tag in HAML files you can include other HTML files.
 Think "fragments".
@@ -52,7 +52,13 @@ It's a rather simple implementation. Again, it works for me, which is all I
 needed.
 
 
-### License
+## Dependencies
+
+HAML & SASS, for obvious reasons. Also Hpricot. All are available as gems. You
+know where to look.
+
+
+## License
 
 This code is released under the [WTFPL](http://sam.zoy.org/wtfpl/COPYING).
 

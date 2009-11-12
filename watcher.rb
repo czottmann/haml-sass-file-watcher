@@ -1,5 +1,8 @@
 #!/usr/local/bin/ruby
 
+require "hpricot"
+
+
 trap("SIGINT") { exit }
 
 if ARGV.empty?
@@ -55,16 +58,16 @@ while true do
       
       next unless is_haml
       
-      html = File.read(output_file)
-      match = html.match(/(<include file='([^']+)'><\/include>)/)
+      html = Hpricot( File.read(output_file) )
+      (html/"include").each do |inc|
+        fragment = File.read("#{watch_folder}/output/#{ inc['file'] }.html") rescue nil
+        next unless fragment
       
-      fragment = File.read("#{watch_folder}/output/#{ match[2] }.html") rescue nil
+        inc.swap("\n<!-- INCLUDE: #{ inc['file'] } START -->\n#{fragment}<!-- INCLUDE: #{ inc['file'] } END -->\n")
+      end
       
-      next unless fragment
-      
-      html.gsub!(match[1], "\n<!-- INCLUDE: #{ match[2] } START -->\n#{fragment}<!-- INCLUDE: #{ match[2] } END -->\n")
       File.open(output_file, "w") do |f|
-        f.puts html
+        f.puts html.to_html
       end
       
     end
