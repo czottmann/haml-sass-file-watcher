@@ -29,11 +29,13 @@ while true do
       
       output_file = ""
       options = ""
+      is_haml = false
       
       ex = f.match(/(sass|haml)$/)[1]
       case ex
       when "haml"
         output_file = f.gsub(/\/haml\/([^\/]+)\.haml/, '/output/\1.html')
+        is_haml = true
       when "sass"
         options = "--style expanded"
         output_file = f.gsub(/\/sass\/([^\/]+)\.sass/, '/css/\1.css')
@@ -42,6 +44,21 @@ while true do
       cmd = "#{ex} #{options} #{f} #{output_file}"
       puts "- #{cmd}"
       system(cmd)
+      
+      next unless is_haml
+      
+      html = File.read(output_file)
+      match = html.match(/(<include file='([^']+)'><\/include>)/)
+      
+      fragment = File.read("#{watch_folder}/output/#{ match[2] }.html") rescue nil
+      
+      next unless fragment
+      
+      html.gsub!(match[1], "\n<!-- INCLUDE: #{ match[2] } START -->\n#{fragment}<!-- INCLUDE: #{ match[2] } END -->\n")
+      File.open(output_file, "w") do |f|
+        f.puts html
+      end
+      
     end
   end
   
