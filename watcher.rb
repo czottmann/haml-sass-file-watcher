@@ -34,11 +34,19 @@ while true do
       ex = f.match(/(sass|haml)$/)[1]
       case ex
       when "haml"
+        output_folder = "#{watch_folder}/output"
+        Dir.mkdir(output_folder) unless File.directory?(output_folder)
+        
         output_file = f.gsub(/\/haml\/([^\/]+)\.haml/, '/output/\1.html')
         is_haml = true
+
       when "sass"
-        options = "--style expanded"
+        output_folder = "#{watch_folder}/css"
+        Dir.mkdir(output_folder) unless File.directory?(output_folder)
+
         output_file = f.gsub(/\/sass\/([^\/]+)\.sass/, '/css/\1.css')
+        options = "--style expanded"
+
       end
 
       cmd = "#{ex} #{options} #{f} #{output_file}"

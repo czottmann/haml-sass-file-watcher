@@ -34,10 +34,38 @@ Example:
 This will fetch the `#{watch_folder}/output/my_fragment.html` file and replace
 the `%include` tag/placeholder with its contents.
 
-This is a rather simple implementation. Again, it works for me, which all I
+    <h1>
+      test omg
+    </h1>
+
+    <!-- INCLUDE: my_fragment START -->
+    <p>
+      Fragment content stuff.
+    </p>
+    <!-- INCLUDE: my_fragment END -->
+
+    <h2>
+      test lol
+    </h2>
+
+It's a rather simple implementation. Again, it works for me, which is all I
 needed.
 
 
 ### License
 
 This code is released under the [WTFPL](http://sam.zoy.org/wtfpl/COPYING).
+
+               DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+                       Version 2, December 2004
+
+    Copyright (C) 2004 Sam Hocevar
+     14 rue de Plaisance, 75014 Paris, France
+    Everyone is permitted to copy and distribute verbatim or modified
+    copies of this license document, and changing it is allowed as long
+    as the name is changed.
+
+               DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+      TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+     0. You just DO WHAT THE FUCK YOU WANT TO.
